@@ -2,16 +2,14 @@
 
 try {
 
-	$pdo 	= new PDO( 'mysql:host=localhost;dbname=ijdb;charset=utf8', 'ijdbuser', '25011990' );
-	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	include __DIR__ . '/../includes/DatabaseConnection.php';
+	include __DIR__ . '/../includes/DatabaseFunctions.php';
 
-	$sql = 'SELECT `joketext` FROM `joke`';
-	$result = $pdo->query($sql);
-
-	foreach( $result as $row )
-		$jokes[] = $row['joketext'];
+	$jokes = allJokes( $pdo );
 
 	$title = 'Joke list';
+
+	$totalJokes = totalJokes( $pdo );
 
 	ob_start();
 
