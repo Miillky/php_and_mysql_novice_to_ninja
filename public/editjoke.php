@@ -7,13 +7,17 @@ include __DIR__ . '/../includes/DatabaseFunctions.php';
 try {
 	if( isset( $_POST['joketext'] ) ){
 
-		updateJoke( $pdo, $_POST['jokeid'], $_POST['joketext'], 1 );
+		updateJoke( $pdo, 'joke', 'id', [
+			'authorId' => 1,
+			'joketext' => $_POST['joketext'],
+			'jokedate' => new DateTime()
+		] );
 
 		header('location: jokes.php');
 
 	} else {
 
-		$joke = getJoke( $pdo, $_GET['id'] );
+		$joke = findById( $pdo, 'joke', 'id', $_GET['id'] );
 
 		$title = 'Edit joke';
 
