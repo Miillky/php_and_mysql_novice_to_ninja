@@ -5,6 +5,7 @@ function query( $pdo, $sql, $parameters = [] ){
 	$query = $pdo->prepare( $sql );
 
 	$query->execute( $parameters );
+
 	return $query;
 
 }
@@ -65,11 +66,11 @@ function insert( $pdo, $table, $fields ){
 
 	$fields = processDates( $fields );
 
-	query( $pdo, $query );
+	query( $pdo, $query, $fields );
 
 }
 
-function updateJoke( $pdo, $table, $primaryKey, $fields ){
+function update( $pdo, $table, $primaryKey, $fields ){
 
 	$query = 'UPDATE `' . $table . '` SET ';
 
@@ -103,5 +104,23 @@ function delete( $pdo, $table, $primaryKey, $id ){
 	$parameters = [ ':id' => $id ];
 
 	query( $pdo, 'DELETE FROM `' . $table . '` WHERE `' . $primaryKey . '` = :id', $parameters );
+
+}
+
+function save( $pdo, $table, $primaryKey, $record ){
+
+	try {
+
+		if( $record[$primaryKey] == '' ){
+			$record[$primaryKey] = null;
+		}
+
+		insert( $pdo, $table, $record );
+
+	} catch ( PDOException $e ){
+
+		update( $pdo, $table, $primaryKey, $record );
+
+	}
 
 }
