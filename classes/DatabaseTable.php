@@ -2,9 +2,15 @@
 
 class DatabaseTable {
 
-	public $pdo;
-	public $table;
-	public $primaryKey;
+	private $pdo;
+	private $table;
+	private $primaryKey;
+
+	public function __construct( PDO $pdo, string $table, string $primaryKey ){
+		$this->pdo 		  = $pdo;
+		$this->table 	  = $table;
+		$this->primaryKey = $primaryKey;
+	}
 
 	private function query( $sql, $parameters = [] ){
 
@@ -13,12 +19,11 @@ class DatabaseTable {
 		$query->execute( $parameters );
 
 		return $query;
-
 	}
 
 	public function findAll(){
 
-		$result = $this->query( $this->pdo, 'SELECT * FROM `' . $this->table . '`' );
+		$result = $this->query('SELECT * FROM ' . $this->table);
 
 		return $result->fetchAll();
 
@@ -26,7 +31,7 @@ class DatabaseTable {
 
 	public function total(){
 
-		$query = $this->query( $this->pdo, 'SELECT COUNT(*) FROM `' . $this->table . '`' );
+		$query = $this->query( 'SELECT COUNT(*) FROM `' . $this->table . '`' );
 
 		$row = $query->fetch();
 
@@ -105,6 +110,7 @@ class DatabaseTable {
 
 	private function processDates( $fields ){
 		foreach( $fields as $key => $value ){
+			/*** If value is an instance of DateTime Class ***/
 			if( $value instanceof DateTime ){
 				$fields[$key] = $value->format( 'Y-m-d' );
 			}
