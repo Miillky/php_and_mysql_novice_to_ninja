@@ -24,7 +24,7 @@ try {
 
 	$action = $_GET['action'] ?? 'home';
 
-	$route = ltrim( strtok( $_SERVER['REQUEST_URI'], '?' ), '/' );
+	$route = ltrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
 
 	if( $route == strtolower( $route ) ){
 
@@ -36,7 +36,7 @@ try {
 
 			$page = $controller->list();
 
-		} elseif ( $route === 'joke/home' ){
+		} elseif ( $route === '' ){
 
 			include __DIR__ . '/../controllers/JokeController.php';
 

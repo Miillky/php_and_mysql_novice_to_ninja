@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<link rel="stylesheet" href="jokes.css">
-	<link rel="stylesheet" href="form.css">
+	<link rel="stylesheet" href="/jokes.css">
+	<link rel="stylesheet" href="/form.css">
 	<title><?= $title ?></title>
 </head>
 <body>
@@ -13,9 +13,9 @@
 	</header>
 	<nav>
 		<ul>
-			<li><a href="index.php">Home</a></li>
-			<li><a href="index.php?route=joke/list">Jokes List</a></li>
-			<li><a href="index.php?action=joke/edit">Add a new Joke</a></li>
+			<li><a href="/">Home</a></li>
+			<li><a href="/joke/list">Jokes List</a></li>
+			<li><a href="/joke/edit">Add a new Joke</a></li>
 		</ul>
 	</nav>
 	<main>
