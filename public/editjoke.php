@@ -2,15 +2,12 @@
 
 try {
 
-	include __DIR__ . '/../includes/DatabaseConnection.php';
-	include __DIR__ . '/../classes/DatabaseTable.php';
-
-	$jokesTable = new DatabaseTable( $pdo, 'joke', 'id' );
+	$jokesTable = new \Ninja\DatabaseTable( $pdo, 'joke', 'id' );
 
 	if ( isset( $_POST['joke'] ) ) {
 
 		$joke = $_POST['joke'];
-		$joke['jokedate'] = new DateTime();
+		$joke['jokedate'] = new \DateTime();
 		$joke['authorId'] = 1;
 
 		$jokesTable->save( $joke );
@@ -32,7 +29,7 @@ try {
 		$output = ob_get_clean();
 	}
 
-} catch ( PDOException $e ){
+} catch ( \PDOException $e ){
 
 	$title = 'An Error has occurred';
 

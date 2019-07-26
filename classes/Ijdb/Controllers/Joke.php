@@ -1,20 +1,20 @@
 <?php
 
-class JokeController
-{
+namespace Ijdb\Controllers;
+use \Ninja\DatabaseTable;
+
+class Joke {
 
 	private $authorsTable;
 	private $jokesTable;
 
-	public function __construct(DatabaseTable $jokesTable, DatabaseTable $authorsTable)
-	{
+	public function __construct( DatabaseTable $jokesTable, DatabaseTable $authorsTable ){
 
 		$this->jokesTable 	= $jokesTable;
 		$this->authorsTable = $authorsTable;
 	}
 
-	public function list()
-	{
+	public function list(){
 
 		$result = $this->jokesTable->findAll();
 
@@ -47,34 +47,32 @@ class JokeController
 		];
 	}
 
-	public function home()
-	{
+	public function home(){
 
 		$title = 'Internet Joke Database';
 
 		return ['template' => 'home.html.php', 'title' => $title];
 	}
 
-	public function delete()
-	{
+	public function delete(){
 
 		$this->jokesTable->delete($_POST['id']);
 
 		header('location: /joke/list');
 	}
 
-	public function edit()
-	{
+	public function edit(){
 
 		if (isset($_POST['joke'])) {
 
 			$joke 			  = $_POST['joke'];
-			$joke['jokedate'] = new DateTime();
+			$joke['jokedate'] = new \DateTime();
 			$joke['authorId'] = 1;
 
 			$this->jokesTable->save($joke);
 
 			header('location: /joke/list');
+
 		} else {
 
 			if (isset($_GET['id'])) {

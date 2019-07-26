@@ -6,9 +6,9 @@ try {
 	include __DIR__ . '/../classes/DatabaseTable.php';
 	include __DIR__ . '/../controllers/RegisterController.php';
 
-	$jokesTable   		= new DatabaseTable( $pdo, 'joke', 'id' );
-	$authorsTable 		= new DatabaseTable( $pdo, 'author', 'id' );
-	$registerController = new RegisterController( $authorsTable );
+	$jokesTable   		= new \Ninja\DatabaseTable( $pdo, 'joke', 'id' );
+	$authorsTable 		= new \Ninja\DatabaseTable( $pdo, 'author', 'id' );
+	$registerController = new \Ijdb\Controllers\RegisterController( $authorsTable );
 
 	$action = $_GET['action'] ?? 'home';
 
@@ -35,7 +35,7 @@ try {
 
 	}
 
-} catch ( PDOException $e ){
+} catch ( \PDOException $e ){
 
 	$title = 'An error has occurred';
 

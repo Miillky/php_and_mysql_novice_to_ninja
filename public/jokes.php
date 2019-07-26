@@ -3,11 +3,8 @@ ini_set('display_errors', 1);
 
 try {
 
-	include __DIR__ . '/../includes/DatabaseConnection.php';
-	include __DIR__ . '/../classes/DatabaseTable.php';
-
-	$jokesTable   = new DatabaseTable( $pdo, 'joke', 'id' );
-	$authorsTable = new DatabaseTable( $pdo, 'author', 'id' );
+	$jokesTable   = new \Ninja\DatabaseTable( $pdo, 'joke', 'id' );
+	$authorsTable = new \Ninja\DatabaseTable( $pdo, 'author', 'id' );
 
 	$result = $jokesTable->findAll();
 
@@ -38,7 +35,7 @@ try {
 
 	$output = ob_get_clean();
 
-} catch ( PDOException $e) {
+} catch ( \PDOException $e) {
 
 	$title = 'An error has occurred';
 
