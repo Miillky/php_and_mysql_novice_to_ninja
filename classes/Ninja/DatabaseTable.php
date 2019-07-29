@@ -45,13 +45,23 @@ class DatabaseTable {
 
 		$query = 'SELECT * FROM `' . $this->table . '` WHERE `' . $this->primaryKey . '` = :value';
 
-		$parameters = [
-			'value' => $value
-		];
+		$parameters = [ 'value' => $value ];
 
 		$query = $this->query( $query, $parameters );
 
 		return $query->fetch();
+
+	}
+
+	public function find( $column, $value ){
+
+		$query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $column . ' =:value';
+
+		$parameters = [ 'value' => $value ];
+
+		$query = $this->query( $query, $parameters );
+
+		return $query->fetchAll();
 
 	}
 
