@@ -1,5 +1,12 @@
-RewriteEngine On
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-RewriteCond %{THE_REQUEST} /public/([^\s?]*)!(\.js|\.css|\.jpg|\.png\.gif)$ [NC]
-RewriteRule ^ %1 [L,NE,R=302]
-RewriteRule ^(.*)$ public/index.php?$1 [L,QSA]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)\.(gif|jpg|png|jpeg|css|js|swf)$ /public/$1.$2 [L,NC]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ /index.php/$1 [L,QSA]
+
+</IfModule>

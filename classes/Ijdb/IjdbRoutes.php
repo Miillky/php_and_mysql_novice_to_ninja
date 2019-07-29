@@ -2,50 +2,50 @@
 
 namespace Ijdb;
 
-class IjdbRoutes {
+class IjdbRoutes implements \Ninja\Routes {
 
-	public function callAction( $route ){
+	public function getRoutes(){
 
 		include __DIR__ . '/../../includes/DatabaseConnection.php';
 
-		$jokesTable   		= new \Ninja\DatabaseTable( $pdo, 'joke', 'id' );
-		$authorsTable 		= new \Ninja\DatabaseTable( $pdo, 'author', 'id' );
+		$jokesTable   = new \Ninja\DatabaseTable( $pdo, 'joke', 'id' );
+		$authorsTable = new \Ninja\DatabaseTable( $pdo, 'author', 'id' );
 
-		if( $route === 'joke/list' ){
+		$jokeController = new \Ijdb\Controllers\Joke( $jokesTable, $authorsTable );
 
-			$controller = new \Ijdb\Controllers\Joke( $jokesTable, $authorsTable );
+		$routes = [
+					'joke/edit' => [
+										'POST' => [
+													'controller' => $jokeController,
+													'action' => 'saveEdit'
+												  ],
+									   'GET'   => [
+													'controller' => $jokeController,
+													'action' => 'edit'
+									   			  ]
+								   ],
+					'joke/delete' => [
+										'POST' => [
+													'controller' => $jokeController,
+													'action'	 => 'delete'
+												  ]
+									 ],
+					'joke/list'   => [
+										'GET'  => [
+													'controller' => $jokeController,
+													'action'	 => 'list'
+												  ]
+									 ],
+					''			  => [
+										'GET' => [
+													'controller' => $jokeController,
+													'action'	 => 'home'
+												 ]
+									 ]
+				  ];
 
-			$page = $controller->list();
+		return $routes;
 
-		} elseif ( $route === '' ){
-
-			$controller = new \Ijdb\Controllers\Joke( $jokesTable, $authorsTable );
-
-			$page = $controller->home();
-
-		} elseif( $route === 'joke/edit' ){
-
-			$controller = new \Ijdb\Controllers\Joke( $jokesTable, $authorsTable );
-
-			$page = $controller->edit();
-
-		} elseif( $route === 'joke/delete' ){
-
-			$controller = new \Ijdb\Controllers\Joke( $jokesTable, $authorsTable );
-
-			$page = $controller->delete();
-
-		} elseif( $route === 'register' ){
-
-			include __DIR__ . '/../controllers/RegisterController.php';
-
-			$controller = new \Ijdb\Controllers\RegisterController( $authorsTable );
-
-			$page = $controller->showForm();
-
-		}
-
-		return $page;
 	}
 
 }
