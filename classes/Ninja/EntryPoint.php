@@ -43,31 +43,38 @@ class EntryPoint {
 
 	public function run(){
 
-		$routes = $this->routes->getRoutes();
+		$routes 		= $this->routes->getRoutes();
+		$authentication = $this->routes->getAuthentication();
 
-		$controller = $routes[$this->route][$this->method]['controller'];
-		$action 	= $routes[$this->route][$this->method]['action'];
+		if( isset( $routes[$this->route]['login'] ) && isset( $routes[$this->route]['login'] ) && !$authentication->isloggedIn() ){
 
-		$page  = $controller->$action();
+			header( 'location: /login/error');
 
-		$title = $page['title'];
+		} else {
 
-		/***
-		* If varible alredy exists it wont overwrite with $page['variable'] because of function scope.
-		* Thats why we use loadTemplate function, to not overwrite global variables with $page['variables']
-		* key that is then extracted from array key into a variable
-		***/
-		if( isset( $page['variables'] ) ){
+			$controller = $routes[$this->route][$this->method]['controller'];
+			$action 	= $routes[$this->route][$this->method]['action'];
 
-			$output = $this->loadTemplate( $page['template'], $page['variables'] );
+			$page  = $controller->$action();
 
-		}	else {
+			$title = $page['title'];
 
-			$output = $this->loadTemplate( $page['template'] );
+			/***
+			* If varible alredy exists it wont overwrite with $page['variable'] because of function scope.
+			* Thats why we use loadTemplate function, to not overwrite global variables with $page['variables']
+			* key that is then extracted from array key into a variable
+			***/
+			if( isset( $page['variables'] ) ){
 
+				$output = $this->loadTemplate( $page['template'], $page['variables'] );
+
+			}	else {
+
+				$output = $this->loadTemplate( $page['template'] );
+
+			}
+
+			echo $this->loadTemplate( 'layout.html.php', [ 'loggedIn' => $authentication->isLoggedIn(), 'output' => $output, 'title' => $title ] );
 		}
-
-		include __DIR__ . '/../../templates/layout.html.php';
-
 	}
 }
