@@ -47,8 +47,8 @@ class IjdbRoutes implements \Ninja\Routes {
 														'action' 	 => 'saveEdit'
 													  ],
 											'GET'  => [
-															'controller' => $jokeController,
-															'action' 	 => 'edit'
+														'controller' => $jokeController,
+														'action' 	 => 'edit'
 													  ],
 											'login' => true
 										 ],

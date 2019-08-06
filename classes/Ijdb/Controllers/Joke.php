@@ -109,18 +109,32 @@ class Joke {
 		$author = $this->authentication->getUser();
 
 		if ( isset( $_GET['id'] ) ) {
+
 			$joke = $this->jokesTable->findById( $_GET['id'] );
+
+			$title = 'Edit joke';
+
+			return [
+				'template'  => 'editjoke.html.php',
+				'title'     => $title,
+				'variables' => [
+					'joke' 	 => $joke ?? null,
+					'userId' => $author['id'] ?? null
+				]
+			];
+
+		} else {
+
+			$title = 'Add joke';
+
+			return [
+				'template'  => 'addjoke.html.php',
+				'title'     => $title,
+				'variables' => [
+					'userId' => $author['id'] ?? null
+				]
+			];
+
 		}
-
-		$title = 'Edit joke';
-
-		return [
-			'template'  => 'editjoke.html.php',
-			'title'     => $title,
-			'variables' => [
-				'joke' => $joke ?? null,
-				'userId' => $author['id'] ?? null
-			]
-		];
 	}
 }
