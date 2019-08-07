@@ -82,23 +82,12 @@ class Joke {
 
 	public function saveEdit(){
 
-		$author = $this->authentication->getUSer();
-
-		if( isset( $_GET['id'] ) ){
-
-			$joke = $this->jokesTable->findById( $_GET['id'] );
-
-			if( $joke['authorId'] != $author['id'] ){
-				return;
-			}
-
-		}
+		$author = $this->authentication->getUser();
 
 		$joke 			  = $_POST['joke'];
 		$joke['jokedate'] = new \DateTime();
-		$joke['authorId'] = $author['id'];
 
-		$this->jokesTable->save( $joke );
+		$author->addJoke( $joke );
 
 		header('location: /joke/list');
 
@@ -112,29 +101,16 @@ class Joke {
 
 			$joke = $this->jokesTable->findById( $_GET['id'] );
 
-			$title = 'Edit joke';
-
-			return [
-				'template'  => 'editjoke.html.php',
-				'title'     => $title,
-				'variables' => [
-					'joke' 	 => $joke ?? null,
-					'userId' => $author['id'] ?? null
-				]
-			];
-
-		} else {
-
-			$title = 'Add joke';
-
-			return [
-				'template'  => 'addjoke.html.php',
-				'title'     => $title,
-				'variables' => [
-					'userId' => $author['id'] ?? null
-				]
-			];
-
 		}
+
+		return [
+			'template'  => 'editjoke.html.php',
+			'title'     => 'Edit joke',
+			'variables' => [
+				'joke' 	 => $joke ?? null,
+				'userId' => $author->id ?? null
+			]
+		];
+
 	}
 }
