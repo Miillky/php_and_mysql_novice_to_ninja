@@ -95,6 +95,8 @@ class DatabaseTable {
 
 		$this->query( $query, $fields );
 
+		return $this->pdo->lastInsertId();
+
 	}
 
 	private function update( $fields ){
@@ -139,13 +141,19 @@ class DatabaseTable {
 
 	public function save( $record ){
 
+		/***** ... (argument unpacking or splat operator) transforms array values into function parameters *****/
+
+		$entity = new $this->className(...$this->constructorArgs);
+
 		try {
 
 			if( $record[$this->primaryKey] == '' ){
 				$record[$this->primaryKey] = null;
 			}
 
-			$this->insert( $record );
+			$insertId = $this->insert( $record );
+
+			$entity->{$this->primaryKey} = $insertId;
 
 		} catch ( \PDOException $e ){
 
@@ -153,6 +161,13 @@ class DatabaseTable {
 
 		}
 
+		foreach( $record as $key => $value ){
+			if( !empty( $value ) ){
+				$entity->$key = $value;
+			}
+		}
+
+		return $entity;
 	}
 
 }
