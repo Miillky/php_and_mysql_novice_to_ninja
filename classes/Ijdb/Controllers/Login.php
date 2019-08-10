@@ -46,6 +46,12 @@ class Login {
 
 	}
 
+	public function permissionError(){
+
+		return [ 'template' => 'permissionerror.html.php', 'title' => 'Access Denied' ];
+
+	}
+
 	public function logout(){
 
 		session_destroy();

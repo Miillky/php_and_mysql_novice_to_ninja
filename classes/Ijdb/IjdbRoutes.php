@@ -7,6 +7,7 @@ class IjdbRoutes implements \Ninja\Routes {
 	private $authorsTable;
 	private $jokesTable;
 	private $categoriesTable;
+	private $jokeCategoriesTable;
 	private $authentication;
 
 	public function __construct(){
@@ -20,7 +21,7 @@ class IjdbRoutes implements \Ninja\Routes {
 		 *****/
 		$this->jokesTable      	   = new \Ninja\DatabaseTable( $pdo, 'joke', 'id', '\Ijdb\Entity\Joke', [&$this->authorsTable, &$this->jokeCategoriesTable] );
 		$this->authorsTable    	   = new \Ninja\DatabaseTable( $pdo, 'author', 'id', '\Ijdb\Entity\Author', [&$this->jokesTable] );
-		$this->categoriesTable 	   = new \Ninja\DatabaseTable( $pdo, 'category', 'id' );
+		$this->categoriesTable 	   = new \Ninja\DatabaseTable( $pdo, 'category', 'id', '\Ijdb\Entity\Category', [&$this->jokesTable, &$this->jokeCategoriesTable] );
 		$this->jokeCategoriesTable = new \Ninja\DatabaseTable( $pdo, 'joke_category', 'categoryId' );
 		$this->authentication  	   = new \Ninja\Authentication( $this->authorsTable, 'email', 'password' );
 
@@ -50,90 +51,119 @@ class IjdbRoutes implements \Ninja\Routes {
 														'action'	 => 'success'
 													 ]
 										 ],
-					'joke/edit'   	  => [
-											'POST' => [
-														'controller' => $jokeController,
-														'action' 	 => 'saveEdit'
-													  ],
-											'GET'  => [
-														'controller' => $jokeController,
-														'action' 	 => 'edit'
-													  ],
-											'login' => true
-										 ],
-					'joke/delete' 	  => [
-											'POST' => [
-														'controller' => $jokeController,
-														'action'	 => 'delete'
-													  ],
-											'login'	=> true
-										 ],
-					'joke/list'   	  => [
-											'GET'  	   => [
+					'author/permissions' => [
+												'GET' => [
+															'controller' => $authorController,
+															'action'	 => 'permissions'
+														  ],
+												'POST' => [
+															'controller' => $authorController,
+															'action'	 => 'savePermissions'
+														  ],
+												'login' => true,
+												'permissions' => \Ijdb\Entity\Author::EDIT_USER_ACCESS
+											],
+					'author/list'		 => [
+												'GET' => [
+															'controller' => $authorController,
+															'action'	 => 'list'
+														 ],
+												'login' 	  => true,
+												'permissions' => \Ijdb\Entity\Author::EDIT_USER_ACCESS
+											],
+					'joke/edit'   	 	 => [
+												'POST' => [
 															'controller' => $jokeController,
-															'action'	 => 'list'
-														]
-										 ],
-					'category/list'   => [
-											'GET'	   => [
-															'controller' => $categoryController,
-															'action'	 => 'list'
+															'action' 	 => 'saveEdit'
 														  ],
-											'login'	   => true
-										 ],
-					'category/edit'   => [
-											'POST'	   => [
-															'controller' => $categoryController,
-															'action'	 => 'saveEdit'
+												'GET'  => [
+															'controller' => $jokeController,
+															'action' 	 => 'edit'
 														  ],
-											'GET'	   => [
-															'controller' => $categoryController,
-															'action'	 => 'edit'
-														  ],
-											'login'	   => true
-										 ],
-					'category/delete' => [
-											'POST'	   => [
-															'controller' => $categoryController,
+												'login' => true
+											],
+					'joke/delete' 		 => [
+												'POST' => [
+															'controller' => $jokeController,
 															'action'	 => 'delete'
 														  ],
-											'login'    => true
-										 ],
-					'login'			  => [
-											'GET' 	   => [
-															'controller' => $loginController,
-															'action'	 => 'loginForm'
-														  ],
-											'POST'	   => [
-															'controller' => $loginController,
-															'action'	 => 'processLogin'
-														  ]
-										],
-					'login/success' =>  [
-											'GET' 	   => [
-															'controller' => $loginController,
-															'action'	 => 'success'
-														],
-											'login'    => true
-									    ],
-					'login/error' 	=> 	[
-											'GET'  	   => [
-															'controller' => $loginController,
-															'action'	 => 'error'
-														]
-									 	],
-					'logout'		=> [
-											'GET'	   => [
-															'controller' => $loginController,
-															'action'	 => 'logout'
-														  ]
-									   ],
-					''			  	=> [
-											'GET' 	   => [
-															'controller' => $jokeController,
-															'action'	 => 'home'
-														]
-										]
+												'login'	=> true
+											],
+					'joke/list'   	  	 => [
+												'GET'  	   => [
+																'controller' => $jokeController,
+																'action'	 => 'list'
+															  ]
+											],
+					'category/list'	     => [
+												'GET'	   => [
+																'controller' => $categoryController,
+																'action'	 => 'list'
+															  ],
+												'login'	   	  => true,
+												'permissions' => \Ijdb\Entity\Author::EDIT_CATEGORIES
+											],
+					'category/edit'   	 => [
+												'POST'	   => [
+																'controller' => $categoryController,
+																'action'	 => 'saveEdit'
+															  ],
+												'GET'	   => [
+																'controller' => $categoryController,
+																'action'	 => 'edit'
+															  ],
+												'login'	   	  => true,
+												'permissions' => \Ijdb\Entity\Author::EDIT_CATEGORIES
+											],
+					'category/delete' 	  => [
+												'POST'	   => [
+																'controller' => $categoryController,
+																'action'	 => 'delete'
+															  ],
+												'login'    	  => true,
+												'permissions' => \Ijdb\Entity\Author::REMOVE_CATEGORIES
+											 ],
+					'login'			  	  => [
+												'GET' 	   => [
+																'controller' => $loginController,
+																'action'	 => 'loginForm'
+															  ],
+												'POST'	   => [
+																'controller' => $loginController,
+																'action'	 => 'processLogin'
+															  ]
+											],
+					'login/success' 	=>  [
+												'GET' 	   => [
+																'controller' => $loginController,
+																'action'	 => 'success'
+															  ],
+												'login'    => true
+											],
+					'login/error' 		=> 	[
+												'GET'  	   => [
+																'controller' => $loginController,
+																'action'	 => 'error'
+															  ]
+											],
+					'login/permissionerror' => [
+												'GET'  	   => [
+																'controller' => $loginController,
+																'action'	 => 'permissionError'
+															  ]
+										  ],
+					'logout'		   => [
+												'GET'	   => [
+																'controller' => $loginController,
+																'action'	 => 'logout'
+															  ]
+										  ],
+					''			  	   => [
+												'GET' 	   => [
+																'controller' => $jokeController,
+																'action'	 => 'home'
+															 ]
+										  ]
 				  ];
 
 		return $routes;
@@ -144,4 +174,18 @@ class IjdbRoutes implements \Ninja\Routes {
 		return $this->authentication;
 	}
 
+	public function checkPermission( $permission ): bool {
+
+		$user = $this->authentication->getUser();
+
+		if( $user && $user->hasPermission( $permission ) ){
+
+			return true;
+
+		} else {
+
+			return false;
+
+		}
+	}
 }

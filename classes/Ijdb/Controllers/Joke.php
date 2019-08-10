@@ -21,7 +21,16 @@ class Joke {
 
 	public function list(){
 
-		$jokes = $this->jokesTable->findAll();
+		if( isset( $_GET['category'] ) ){
+
+			$category = $this->categoriesTable->findById( $_GET['category'] );
+			$jokes    = $category->getJokes();
+
+		} else {
+
+			$jokes = $this->jokesTable->findAll();
+
+		}
 
 		$title = 'Joke list';
 
@@ -35,7 +44,8 @@ class Joke {
 			'variables' => [
 				'totalJokes' => $totalJokes,
 				'jokes'		 => $jokes,
-				'userId' 	 => $author->id ?? null
+				'user' 	 	 => $author,
+				'categories' => $this->categoriesTable->findAll()
 			]
 		];
 	}
@@ -49,13 +59,13 @@ class Joke {
 
 	public function delete(){
 
-		$author = $this->authentication->getUSer();
+		$author = $this->authentication->getUser();
 
 		if( isset( $_GET['id'] ) ){
 
 			$joke = $this->jokesTable->findById( $_GET['id'] );
 
-			if( $joke->authorId != $author->id ){
+			if( $joke->authorId != $author->id AND !$author->hasPermission( \Ijdb\Entity\Author::DELETE_JOKES ) ){
 				return;
 			}
 
@@ -76,8 +86,15 @@ class Joke {
 
 		$jokeEntity = $author->addJoke( $joke );
 
-		foreach( $_POST['category'] as $categoryId ){
-			$jokeEntity->addCategory( $categoryId );
+		$jokeEntity->clearCategories();
+
+		if( $_POST['category'] ){
+
+			foreach ($_POST['category'] as $categoryId) {
+
+				$jokeEntity->addCategory($categoryId);
+
+			}
 		}
 
 		header('location: /joke/list');
@@ -100,7 +117,7 @@ class Joke {
 			'title'     => 'Edit joke',
 			'variables' => [
 								'joke' 	 	 => $joke ?? null,
-								'userId' 	 => $author->id ?? null,
+								'user' 	 	 => $author,
 								'categories' => $categories
 						   ]
 		];

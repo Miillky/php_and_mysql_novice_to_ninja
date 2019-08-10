@@ -1,4 +1,4 @@
-<?php if (empty($joke->id) || $userId == $joke->authorId):?>
+<?php if (empty($joke->id) || $userId == $joke->authorId || $user->hasPermission( \Ijdb\Entity\Author::EDIT_JOKES ) ):?>
 
 	<form action="" method="post">
 		<input type="hidden" name="joke[id]" value="<?= $joke->id ?? '' ?>">
@@ -9,7 +9,16 @@
 
 		<?php foreach( $categories as $category ): ?>
 
-			<input type="checkbox" name="category[]" value="<?=$category->id?>" />
+			<?php if( $joke && $joke->hasCategory( $category->id ) ): ?>
+
+				<input type="checkbox" checked name="category[]" value="<?=$category->id?>" />
+
+			<?php else: ?>
+
+				<input type="checkbox" name="category[]" value="<?=$category->id?>" />
+
+			<?php endif; ?>
+
 			<label><?=$category->name?></label>
 
 		<?php endforeach; ?>
